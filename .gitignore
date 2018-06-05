@@ -1,0 +1,6 @@
+\#*
+.\#*
+.gdb_history
+GNUmakefile
+CMakeLists.txt.user*
+.travis.yml
