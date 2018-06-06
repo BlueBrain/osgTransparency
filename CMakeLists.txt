@@ -33,13 +33,14 @@ set(osgTransparency_VERSION_ABI 8)
 
 set(OSGTRANSPARENCY_DESCRIPTION
   "OSG library for transparency rendering algorithms")
-set(OSGTRANSPARENCY_ISSUES_URL
-    "https://bbpteam.epfl.ch/project/issues/browse/OSGTR")
-set(OSGTRANSPARENCY_MAINTAINER "Juan Hernando <jhernando@fi.upm.es>")
-set(OSGTRANSPARENCY_LICENSE Proprietary)
+set(OSGTRANSPARENCY_MAINTAINER_NAME "Blue Brain Project")
+set(OSGTRANSPARENCY_MAINTAINER_EMAIL "<bbp-open-source@googlegroups.com>")
+set(OSGTRANSPARENCY_MAINTAINER_MAINTAINER "${OSGTRANSPARENCY_MAINTAINER_NAME} ${OSGTRANSPARENCY_MAINTAINER_EMAIL}")
+set(OSGTRANSPARENCY_LICENSE GPLv3)
 set(OSGTRANSPARENCY_INCLUDE_NAME osgTransparency)
 set(OSGTRANSPARENCY_DEB_DEPENDS libopenscenegraph-dev libboost-filesystem-dev)
 
+set(COMMON_PROJECT_DOMAIN ch.epfl.bluebrain)
 include(Common)
 
 if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
@@ -71,10 +72,6 @@ add_subdirectory(examples)
 add_subdirectory(tests)
 
 include(CPackConfig)
-
-set(GIT_DOCUMENTATION_REPO BBPDocumentation)
-set(COMMON_ORGANIZATION_NAME BBP)
-set(COMMON_PROJECT_DOMAIN ch.epfl.bluebrain)
 
 set(DOXYGEN_MAINPAGE_MD README.md)
 set(DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md)
