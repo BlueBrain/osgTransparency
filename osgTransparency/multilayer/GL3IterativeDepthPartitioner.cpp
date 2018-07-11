@@ -33,6 +33,9 @@
 
 #include <osg/BlendEquation>
 #include <osg/BlendFunc>
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+#  include <osg/BindImageTexture>
+#endif
 #include <osg/FrameBufferObject>
 #include <osg/Geometry>
 #include <osg/TextureRectangle>
@@ -317,7 +320,9 @@ void GL3IterativeDepthPartitioner::computeDepthPartition(
     {
         clearTexture(*renderInfo.getState(), _auxiliaryBuffer,
                      _countTextures[i].get());
+#if not OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
         _countTextures[i]->bindToImageUnit(i, osg::Texture::READ_WRITE);
+#endif
     }
 
     _auxiliaryBuffer->setAttachment(osg::Camera::COLOR_BUFFER0,
@@ -382,7 +387,9 @@ void GL3IterativeDepthPartitioner::computeDepthPartition(
         {
             clearTexture(*renderInfo.getState(), _auxiliaryBuffer,
                          _countTextures[i].get(), osg::Vec4(0, 0, 0, 0));
+#if not OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
             _countTextures[i]->bindToImageUnit(i, osg::Texture::READ_WRITE);
+#endif
         }
         /* Rendering scene.
            In this pass nothing is really rendered to the framebuffer. */
@@ -630,6 +637,12 @@ void GL3IterativeDepthPartitioner::_createFirstFindQuantileIntervalsStateSet(
     modes[GL_BLEND] = OFF;
     /* Attributes */
     attributes[_viewport] = ON_OVERRIDE_PROTECTED;
+    for (size_t i = 0; i < _countTextures.size(); ++i)
+    {
+        attributes[new osg::BindImageTexture(i, _countTextures[i],
+                                             osg::BindImageTexture::READ_WRITE,
+                                             GL_R32UI)];
+    }
     /* Textures */
     int nextIndex = _parameters.reservedTextureUnits;
     insertTextureArrayUniform(uniforms, "countTextures", nextIndex,
@@ -690,6 +703,12 @@ void GL3IterativeDepthPartitioner::_createCountIterationStateSet(
     modes[GL_CULL_FACE] = OFF_OVERRIDE;
     /* Attributes */
     attributes[_viewport] = ON_OVERRIDE_PROTECTED;
+    for (size_t i = 0; i < _countTextures.size(); ++i)
+    {
+        attributes[new osg::BindImageTexture(i, _countTextures[i],
+                                             osg::BindImageTexture::READ_WRITE,
+                                             GL_R32UI)];
+    }
     /* Textures */
     int nextIndex = _parameters.reservedTextureUnits;
     setupTexture("minMaxTexture", nextIndex++, *_countIteration,

@@ -43,6 +43,9 @@
 #include "osgTransparency/OcclusionQueryGroup.h"
 
 #include <osg/BlendFunc>
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+#  include <osg/BindImageTexture>
+#endif
 #include <osg/Geometry>
 #include <osg/Texture2DArray>
 #include <osg/ValueObject>
@@ -554,6 +557,14 @@ void Canvas::_createPeelStateSet()
     uniforms.insert(new osg::Uniform("backInColor", nextIndex++));
     uniforms.insert(new osg::Uniform("frontOutColor", 0));
     uniforms.insert(new osg::Uniform("backOutColor", 1));
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+    attributes[new osg::BindImageTexture(0, _frontColors,
+                                         osg::BindImageTexture::READ_WRITE,
+                                         GL_RGBA32F_ARB)];
+    attributes[new osg::BindImageTexture(1, _backColors,
+                                         osg::BindImageTexture::READ_WRITE,
+                                         GL_RGBA32F_ARB)];
+#endif
 #else
     /* Textures where front and back layers of each slices are blended */
     osg::ref_ptr<osg::TextureRectangle> frontBlendedTextures[8];
@@ -700,7 +711,7 @@ void Canvas::_preparePeelFBOAndTextures(osg::RenderInfo& renderInfo)
     }
     _peelFBO->apply(state);
 
-#ifdef OSG_GL3_AVAILABLE
+#if defined OSG_GL3_AVAILABLE && not OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
     /* For some unknown reason this is needed every frame. */
     _frontColors->bindToImageUnit(0, osg::Texture::WRITE_ONLY,
                                   COLOR_BUFFER_FORMAT, 0, true);

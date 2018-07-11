@@ -152,7 +152,7 @@ void TextureBuffer::apply(osg::State& state) const
 
         /* Binding the texture and its texture buffer object as texture
            storage. */
-        textureObject->bind();
+        textureObject->bind(state);
         _textureBufferObject->bindTextureBuffer(state, _internalFormat);
         _bindImageTexture(state, textureObject);
     }
@@ -187,7 +187,7 @@ void TextureBuffer::apply(osg::State& state) const
             textureObject->setAllocated(true);
             _textureBufferObject->unbind(contextID);
         }
-        textureObject->bind();
+        textureObject->bind(state);
         _textureBufferObject->bindTextureBuffer(state, _internalFormat);
         _bindImageTexture(state, textureObject);
     }

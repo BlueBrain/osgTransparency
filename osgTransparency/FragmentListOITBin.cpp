@@ -25,7 +25,7 @@
 #ifdef OSG_GL3_AVAILABLE
 
 #include "FragmentListOITBin.h"
-#include "TextureBuffer.h"
+//#include "TextureBuffer.h"
 
 #include "util/GPUTimer.h"
 #include "util/constants.h"
@@ -34,7 +34,12 @@
 #include "util/helpers.h"
 #include "util/strings_array.h"
 
+#include <osg/Version>
+
 #include <osg/BlendFunc>
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+#  include <osg/BindImageTexture>
+#endif
 #include <osg/BufferIndexBinding>
 #include <osg/BufferObject>
 #include <osg/Depth>
@@ -43,8 +48,12 @@
 #include <osg/GLExtensions>
 #include <osg/Geometry>
 #include <osg/Stencil>
+#include <osg/TextureBuffer>
 #include <osg/TextureRectangle>
 #include <osg/ValueObject>
+
+
+
 
 #include <boost/lexical_cast.hpp>
 
@@ -275,7 +284,7 @@ private:
 
     osg::ref_ptr<osg::TextureRectangle> _fragmentLists;
     osg::ref_ptr<osg::TextureRectangle> _fragmentCounts;
-    osg::ref_ptr<TextureBuffer> _fragments;
+    osg::ref_ptr<osg::TextureBuffer> _fragments;
 
     /* If alpha cut off is requested we need an extra image buffer that encodes
        the current transparency value and the largest depth found so far. The
@@ -491,7 +500,9 @@ private:
             createTexture<osg::TextureRectangle>(_maxWidth, _maxHeight,
                                                  GL_R32UI, GL_RED_INTEGER);
 
-        _fragments = new TextureBuffer();
+        osg::BufferData* data = new osg::BufferData();
+        data->
+        _fragments = new osg::TextureBuffer(bufferData);
         _fragments->setTextureWidth(_maxWidth * _maxHeight * 3 *
                                     MEAN_FRAGMENTS_PER_PIXEL);
         _fragments->setInternalFormat(GL_R32UI);
@@ -538,19 +549,37 @@ private:
         int imgUnit = 0;
         /* Blending operations don't seem to work in integer framebuffer
            attachments, so an image buffer is used instead. */
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+        attributes[new osg::BindImageTexture(imgUnit, _fragmentCounts,
+                                             osg::BindImageTexture::READ_WRITE,
+                                             GL_R32UI)];
+#else
         _fragmentCounts->bindToImageUnit(imgUnit, osg::Texture::READ_WRITE);
+#endif
         uniforms.insert(new osg::Uniform("fragmentCounts", imgUnit));
         _saveFragmentsStateSet->setTextureAttribute(texUnit, _fragmentCounts);
         ++texUnit;
         ++imgUnit;
 
+
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+        attributes[new osg::BindImageTexture(
+            imgUnit, _fragments, osg::BindImageTexture::READ_WRITE, GL_R32UI)];
+#else
         _fragments->bindToImageUnit(imgUnit, osg::Texture::WRITE_ONLY);
+#endif
         uniforms.insert(new osg::Uniform("fragmentBuffer", imgUnit));
         _saveFragmentsStateSet->setTextureAttribute(texUnit, _fragments);
         ++texUnit;
         ++imgUnit;
 
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+        attributes[new osg::BindImageTexture(imgUnit, _fragmentLists,
+                                             osg::BindImageTexture::READ_WRITE,
+                                             GL_R32UI)];
+#else
         _fragmentLists->bindToImageUnit(imgUnit, osg::Texture::READ_WRITE);
+#endif
         uniforms.insert(new osg::Uniform("listHead", imgUnit));
         _saveFragmentsStateSet->setTextureAttribute(texUnit, _fragmentLists);
         ++texUnit;
@@ -561,8 +590,14 @@ private:
             _minTransparency = new osg::Uniform("minTransparency", 0.f);
             uniforms.insert(_minTransparency);
 
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 10)
+        attributes[new osg::BindImageTexture(imgUnit, _depthTranspBuffer,
+                                             osg::BindImageTexture::READ_WRITE,
+                                             GL_R32UI)];
+#else
             _depthTranspBuffer->bindToImageUnit(imgUnit,
                                                 osg::Texture::READ_WRITE);
+#endif
             uniforms.insert(new osg::Uniform("depthTranspBuffer", imgUnit));
             _saveFragmentsStateSet->setTextureAttribute(texUnit,
                                                         _depthTranspBuffer);
