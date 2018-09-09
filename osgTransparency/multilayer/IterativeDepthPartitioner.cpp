@@ -41,6 +41,7 @@
 
 #include <osg/BlendFunc>
 #include <osg/Depth>
+#include <osg/FrameBufferObject>
 #include <osg/Geometry>
 #include <osg/TextureRectangle>
 #include <osgDB/WriteFile>
