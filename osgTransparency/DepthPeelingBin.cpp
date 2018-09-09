@@ -46,7 +46,7 @@
 #include <osg/BlendEquation>
 #include <osg/BlendFunc>
 #include <osg/ColorMask>
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
 #include <osg/ContextData>
 #endif
 #include <osg/Depth>
@@ -99,7 +99,7 @@ struct DebugPartition
     int col;
 } s_debugPartition;
 
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
 class QueryObjectManager : public osg::GLObjectManager
 {
 public:
@@ -525,7 +525,7 @@ DepthPeelingBin::_Impl::Tile::Tile(Screen* screen, unsigned int row,
 DepthPeelingBin::_Impl::Tile::~Tile()
 {
 /* The query object is leaked in older versions of OSG. */
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
     osg::get<QueryObjectManager>(_screen->getContext().getID())
         ->scheduleGLObjectForDeletion(_query);
 #endif

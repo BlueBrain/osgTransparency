@@ -26,7 +26,7 @@
 
 #include <osg/Version>
 
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
 #include <osg/ContextData>
 #endif
 
@@ -36,7 +36,7 @@ namespace bbp
 {
 namespace osgTransparency
 {
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
 namespace
 {
 class QueryObjectManager : public osg::GLObjectManager
@@ -70,7 +70,7 @@ public:
     {
 /* The query objects are leaked in older versions of OSG because it's
    very hard to delete them safely. */
-#if OSG_VERSION_GREATER_OR_EQUAL(3, 3, 3)
+#if OSG_VERSION_GREATER_OR_EQUAL(3, 5, 0)
         _available.splice(_available.end(), _pending);
         auto objectManager = osg::get<QueryObjectManager>(_contextID);
         for (auto query : _pending)
