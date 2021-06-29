@@ -54,3 +54,8 @@ from source is as simple as:
 For the GL3 version, OpenSceneGraph needs to be compiled with GL3 support,
 refer to the OpenSceneGraph documentation for compilation instructions.
 
+# Funding & Acknowledgment
+ 
+The development of this software was supported by funding to the Blue Brain Project,
+a research center of the École polytechnique fédérale de Lausanne (EPFL), from the
+Swiss government’s ETH Board of the Swiss Federal Institutes of Technology.
