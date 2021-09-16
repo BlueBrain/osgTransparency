@@ -1,6 +1,4 @@
-[TOC]
-
-# Introduction {#Introduction}
+# Introduction
 
 Welcome to OSG Transparency, a C++ library that provides 3 algorithms to render
 transparent geometry in OpenSceneGraph (OSG) in an improved way compared to
@@ -14,7 +12,7 @@ To keep track of the changes between releases check the [changelog](@ref Changel
 
 For code examples on how to use the library check the @ref tutorial.
 
-# Features {#Features}
+# Features
 
 This library provides 3 algorithm for order-independent-transparency when built
 with GL2 support, plus a fourth one when built with GL3 support. The algorithms
@@ -31,7 +29,7 @@ are:
 
 All algorithms are implemented as classes that inherit from osgUtil::RenderBin.
 
-# Building {#Building}
+# Building
 
 OSG Transparency is a cross-platform library, designed to run on any modern
 operating system, including all Unix variants. OSG Transparency uses CMake to
